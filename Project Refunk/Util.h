@@ -9,6 +9,6 @@ public:
 	SDL_Window* window = NULL;
 	SDL_Texture* texture = NULL;
 
-	void drawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius);
+	void drawCircle(SDL_Renderer* renderer, int32_t centerX, int32_t centerY, int32_t radius);
 } util;
 

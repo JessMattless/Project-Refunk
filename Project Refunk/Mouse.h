@@ -13,14 +13,14 @@ private:
 public:
 
 	std::map<int, bool> button;
-	std::pair<float, float> position;
-	std::pair<float, float> motion;
+	std::pair<int, int> position;
+	std::pair<int, int> motion;
 	float wheel = 0;
 
 	Mouse();
 
-	void setPos(float xPos, float yPos);
-	void setMotion(float xMotion, float yMotion);
+	void setPos(int xPos, int yPos);
+	void setMotion(int xMotion, int yMotion);
 
 	SDL_Surface* getActiveCursor();
 

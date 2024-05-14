@@ -24,7 +24,7 @@ App::App() {
 
 int App::onExecute()
 {
-	float timeA, timeB = 0;
+	uint32_t timeA, timeB = 0;
 
 	SDL_Event event;
 	while (_running) {
@@ -33,7 +33,7 @@ int App::onExecute()
 		}
 
 		timeA = SDL_GetTicks();
-		float deltaTime = timeA - timeB;
+		uint32_t deltaTime = timeA - timeB;
 		if (deltaTime > 1000 / 60.0) {
 			timeB = timeA;
 			onLoop();
@@ -81,6 +81,7 @@ void App::onLoop()
 		_fullscreen = false; keyboard.key[SDLK_F11] = false;
 	}
 
+	// Click to set a target that triggers the player moving
 	if (mouse.button[SDL_BUTTON_LEFT]) {
 		player->setTarget(mouse.position.first, mouse.position.second);
 		mouse.button[SDL_BUTTON_LEFT] = false;

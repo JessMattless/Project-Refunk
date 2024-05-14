@@ -7,13 +7,13 @@ Mouse::Mouse()
 	cursorList.push_back(IMG_Load("../misc/cursors/Cursor_Active.bmp"));
 }
 
-void Mouse::setPos(float xPos, float yPos)
+void Mouse::setPos(int xPos, int yPos)
 {
 	position.first = xPos;
 	position.second = yPos;
 }
 
-void Mouse::setMotion(float xMotion, float yMotion)
+void Mouse::setMotion(int xMotion, int yMotion)
 {
 	motion.first = xMotion;
 	motion.second = yMotion;

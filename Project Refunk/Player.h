@@ -28,13 +28,15 @@ private:
 	SDL_Renderer* renderer;
 
 public:
+	int targetCounter = 0;
+
 	Player(SDL_Renderer* renderer);
 
 	void setPos(float x, float y);
 	void setDirection(int direction);
 	void setState(State state);
 	void setFunkeyId(FunkeyID funkeyId);
-	void setTarget(float x, float y);
+	void setTarget(int x, int y);
 
 	position getPos();
 	int getDirection();

@@ -58,9 +58,9 @@ void Player::setFunkeyId(FunkeyID funkeyId)
 /// <summary>
 /// Sets the target of the player, used for walking to the target
 /// </summary>
-void Player::setTarget(float x, float y)
+void Player::setTarget(int x, int y)
 {
-	target.x = x - rect.w / 2;
+	target.x = x - rect.w / 2.0;
 	target.y = y - rect.h + 5;
 }
 
@@ -134,13 +134,16 @@ void Player::render(SDL_Renderer* renderer)
 void Player::renderTarget(SDL_Renderer* renderer)
 {
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	util.drawCircle(renderer, target.x + rect.w / 2, target.y + rect.h - 5, 12);
+	util.drawCircle(renderer, target.x + rect.w / 2.0, target.y + rect.h - 5, targetCounter);
+	if (targetCounter < 12) targetCounter++;
+	else targetCounter = 0;
 }
 
 void Player::moveByStep()
 {
 	position diff = { target.x - pos.x, target.y - pos.y };
 	if (!hasReachedTargetX()) {
+		// Check if the distance left to travel is less than a step, if it is, then just move the distance
 		float posDiff = (diff.x > 0) ? diff.x : -diff.x;
 		if (posDiff < movementStep) setPos(pos.x + diff.x, pos.y);
 		else {
@@ -149,6 +152,7 @@ void Player::moveByStep()
 		}
 	}
 	if (!hasReachedTargetY()) {
+		// Check if the distance left to travel is less than a step, if it is, then just move the distance
 		float posDiff = (diff.y > 0) ? diff.y : -diff.y;
 		if (posDiff < movementStep) setPos(pos.x, pos.y + diff.y);
 		else {
