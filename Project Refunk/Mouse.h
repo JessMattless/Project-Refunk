@@ -7,10 +7,10 @@
 static class Mouse
 {
 private:
+	int activeCursor = 0;
 	std::vector<SDL_Surface*> cursorList;
 
 public:
-	int activeCursor = 0;
 
 	std::map<int, bool> button;
 	std::pair<float, float> position;

@@ -1,21 +1,23 @@
 #include "App.h"
+#include "Util.h"
 #include "Mouse.h"
 #include "Keyboard.h"
 
 #include <SDL_image.h>
+#include <cmath>
 
 App::App() {
 	_running = true;
 	_fullscreen = false;
 
 	SDL_Init(SDL_INIT_VIDEO);
-	window = SDL_CreateWindow("Project Refunk", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
-	renderer = SDL_CreateRenderer(window, NULL, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
+	util.window = SDL_CreateWindow("Project Refunk", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
+	util.renderer = SDL_CreateRenderer(util.window, NULL, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	util.texture = SDL_CreateTexture(util.renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	SDL_SetWindowMinimumSize(window, WINDOW_WIDTH, WINDOW_HEIGHT);
+	SDL_SetWindowMinimumSize(util.window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	player = new Player();
+	player = new Player(util.renderer);
 
 	onExecute();
 }
@@ -32,7 +34,7 @@ int App::onExecute()
 
 		timeA = SDL_GetTicks();
 		float deltaTime = timeA - timeB;
-		if (deltaTime > 1000 / 20.0) {
+		if (deltaTime > 1000 / 60.0) {
 			timeB = timeA;
 			onLoop();
 			onRender();
@@ -69,32 +71,46 @@ void App::onLoop()
 {
 	SDL_Cursor* cursor = SDL_CreateColorCursor(mouse.getActiveCursor(), 0, 0);
 
+	//Press F11 to toggle fullscreen
 	if (keyboard.key[SDLK_F11] && !_fullscreen) {
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		SDL_SetWindowFullscreen(util.window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		_fullscreen = true; keyboard.key[SDLK_F11] = false;
 	}
 	else if (keyboard.key[SDLK_F11] && _fullscreen) {
-		SDL_SetWindowFullscreen(window, 0);
+		SDL_SetWindowFullscreen(util.window, 0);
 		_fullscreen = false; keyboard.key[SDLK_F11] = false;
 	}
-	
+
+	if (mouse.button[SDL_BUTTON_LEFT]) {
+		player->setTarget(mouse.position.first, mouse.position.second);
+		mouse.button[SDL_BUTTON_LEFT] = false;
+	}
+
+	player->moveByStep();
+
 	SDL_SetCursor(cursor);
 }
 
 void App::onRender()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(util.renderer, 0, 0, 0, 255);
+	SDL_RenderClear(util.renderer);
 
-	SDL_RenderPresent(renderer);
+	if (!player->hasReachedTargetX() || !player->hasReachedTargetY()) {
+		player->renderTarget(util.renderer);
+	}
+
+	player->render(util.renderer);
+
+	SDL_RenderPresent(util.renderer);
 }
 
 void App::onCleanup()
 {
-	SDL_DestroyTexture(texture);
-	SDL_DestroyRenderer(renderer);
+	SDL_DestroyTexture(util.texture);
+	SDL_DestroyRenderer(util.renderer);
 
-	SDL_DestroyWindow(window);
+	SDL_DestroyWindow(util.window);
 	SDL_Quit();
 }
 

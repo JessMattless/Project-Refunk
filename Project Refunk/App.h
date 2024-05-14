@@ -13,10 +13,6 @@ private:
 
 public:
 
-	SDL_Renderer* renderer = NULL;
-	SDL_Window* window = NULL;
-	SDL_Texture* texture = NULL;
-
 	Player* player;
 
 	App(); // Used as our init function
